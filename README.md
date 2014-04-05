@@ -1,6 +1,5 @@
 ESODB-Addon
 ===================
-
 This is the source for the Elder Scrolls Online Database Addon (ESODB Addon)
 http://esodb.com.
 
@@ -21,7 +20,7 @@ Enable it at character selection, or while being in-game.
 
 Once you logged out after playing for a while, you can find an "ESODB.lua" file in:
 ```
-C:\Users\<YOUR USERNAME>\Documents\Elder Scrolls Online\live\SavedVariables\
+C:\Users\<YOUR USERNAME>\Documents\Elder Scrolls Online\<VERSION>\SavedVariables\
 ```
 
 Send it to the quick uploader:
