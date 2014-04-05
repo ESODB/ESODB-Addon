@@ -14,12 +14,15 @@ How to use (PC)
 Place the folder "ESODB" in:
 (if you dont have an AddOns folder, create it)
 <VERSION> is either "live" or "liveeu", depending on your location
-    C:\Users\<YOUR USERNAME>\Documents\Elder Scrolls Online\<VERSION>\AddOns\
-
+```
+C:\Users\<YOUR USERNAME>\Documents\Elder Scrolls Online\<VERSION>\AddOns\
+```
 Enable it at character selection, or while being in-game.
 
 Once you logged out after playing for a while, you can find an "ESODB.lua" file in:
-	C:\Users\<YOUR USERNAME>\Documents\Elder Scrolls Online\live\SavedVariables\
+```
+C:\Users\<YOUR USERNAME>\Documents\Elder Scrolls Online\live\SavedVariables\
+```
 
 Send it to the quick uploader:
 http://esodb.com/upload/
@@ -29,12 +32,16 @@ How to use (Mac/Osx)
 Place the folder "ESODB" in:
 (if you dont have an AddOns folder, create it)
 <VERSION> is either "live" or "liveeu", depending on your location
-    /Users/<YOUR USERNAME>/Documents/Elder Scrolls Online/<VERSION>/AddOns/
+```
+/Users/<YOUR USERNAME>/Documents/Elder Scrolls Online/<VERSION>/AddOns/
+```
 (You can find it easly starting Finder, and click "Documents" in the left menu)
 Enable it at character selection, or while being in-game.
 
 Once you logged out after playing for a while, you can find an "ESODB.lua" file in:
-	/Users/<YOUR USERNAME>/Documents/Elder Scrolls Online/<VERSION>/SavedVariables/
+```
+/Users/<YOUR USERNAME>/Documents/Elder Scrolls Online/<VERSION>/SavedVariables/
+```
 
 Send it to the quick uploader:
 http://esodb.com/upload/
