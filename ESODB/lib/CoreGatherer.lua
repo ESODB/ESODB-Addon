@@ -1,7 +1,7 @@
 
 ESODB = {}
 ESODB.name = "ESODB"
-ESODB.version = "0.0.7"
+ESODB.version = "0.0.8"
 ESODB.savedVars = {}
 
 -- Saved Variables:
@@ -25,7 +25,7 @@ function ESODB.InitSavedVariables(...)
     -- Addon settings
     ["settings"]        = ESODB.savedVar(1, "settings", { debug = 0, info = 0, addonVersion = ESODB.Version }),
     -- Character info
-    ["character"]       = ESODB.savedVar(2, "character", nil),
+    ["character"]       = ESODB.savedVar(3, "character", nil),
     -- NPC related
     ["npc"]             = ESODB.savedVar(2, "npc", nil),
     ["vendor"]          = ESODB.savedVar(2, "vendor", nil),
@@ -123,56 +123,56 @@ function ESODB.GatherObject(doNotLogAgain, targetType, keys, ... )
 end
 
 function ESODB.OnUpdate()
-  local objectAction, objectName, interactionBlocked, additionalInfo, context = GetGameCameraInteractableActionInfo()
-  local playerInteracting = IsPlayerInteractingWithObject()
-  local interactionType = GetInteractionType()
+    local objectAction, objectName, interactionBlocked, additionalInfo, context = GetGameCameraInteractableActionInfo()
+    local playerInteracting = IsPlayerInteractingWithObject()
+    local interactionType = GetInteractionType()
 
-  -- Action or the object name is empty
-  if objectAction == nil then
-    -- Clearing targets
-    ESODB.activeTarget = {}
-    ESODB.lastTarget = {}
-    return
-  end
-
-  -- Not interacting with an object
-  if objectName == nil then
-    -- Clearing targets
-    ESODB.activeTarget = {}
-    ESODB.lastTarget = {}
-    return
-  end
-
-  -- Function might run before player is even activated? Just to be safe:
-  if not IsPlayerActivated() then
-    return
-  end
-
-  local activeTarget = ESODB.activeTarget
-  local lastTarget = ESODB.lastTarget
-
-  -- Checking if we're already using the target to avoid loops
-  if lastTarget ~= nil and lastTarget.name ~= nil and objectName == lastTarget.name then
-    if interactionType == INTERACTION_FAST_TRAVEL or interactionType == 23 then
-      -- Wayshrines and Craftingstations
-      if objectName == activeTarget.name then
-        -- Is current target already
+    -- Action or the object name is empty
+    if objectAction == nil then
+        -- Clearing targets
+        ESODB.activeTarget = {}
+        ESODB.lastTarget = {}
         return
-      end
-    else
-      -- Is current target already (just by name)
-      return
     end
-  end
 
-  local xPos, yPos, z, subzone, world = ESODB.GetUnitPosition("player")
+    -- Not interacting with an object
+    if objectName == nil then
+        -- Clearing targets
+        ESODB.activeTarget = {}
+        ESODB.lastTarget = {}
+        return
+    end
 
-  -- Setting lastTarget that we can process for future references
-  ESODB.lastTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
-  -- if GetCraftingInteractionType() ~= CRAFTING_TYPE_INVALID then processingHarvest = false return end
+    -- Function might run before player is even activated? Just to be safe:
+    if not IsPlayerActivated() then
+        return
+    end
 
-  local dateValue = GetDate()
-  local timeValue = GetTimeString()
+    local activeTarget = ESODB.activeTarget
+    local lastTarget = ESODB.lastTarget
+
+    -- Checking if we're already using the target to avoid loops
+    if lastTarget ~= nil and lastTarget.name ~= nil and objectName == lastTarget.name then
+        if interactionType == INTERACTION_FAST_TRAVEL or interactionType == 23 then
+            -- Wayshrines and Craftingstations
+            if objectName == activeTarget.name then
+                -- Is current target already
+                return
+            end
+        else
+            -- Is current target already (just by name)
+            return
+        end
+    end
+
+    local xPos, yPos, z, subzone, world = ESODB.GetUnitPosition("player")
+
+    -- Setting lastTarget that we can process for future references
+    ESODB.lastTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
+    -- if GetCraftingInteractionType() ~= CRAFTING_TYPE_INVALID then processingHarvest = false return end
+
+    local dateValue = GetDate()
+    local timeValue = GetTimeString()
 
     -- Harvest
     if objectAction == GetString(SI_GAMECAMERAACTIONTYPE3) then
@@ -180,95 +180,98 @@ function ESODB.OnUpdate()
       ESODB.processingNode = "harvest"
       --ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
 
-  -- Use
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE5) then
-    ESODB.Debug("Use..")
-    -- No special Interaction
-    if interactionType == INTERACTION_NONE then
-      --Skyshard
-      if name == "Skyshard" then
-        ESODB.Debug("Skyshard..")
-        ESODB.GatherObject(true, "skyshard", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
-      end
+    -- Use
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE5) then
+        ESODB.Debug("Use..")
+        -- No special Interaction
+        if interactionType == INTERACTION_NONE then
+            --Skyshard
+            if objectName == "skyshard" then -- Does this work in German/Russian/etc?
+                ESODB.Debug("Skyshard..")
+                ESODB.GatherObject(true, "skyshard", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+            else
+                ESODB.Debug("Debugging INTERACTION_NONE")
+            end
+        end
 
     -- Crafting station
     elseif interactionType == 23 and playerInteracting then
-      ESODB.Debug("craftingstation..")
-      ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
-      ESODB.GatherObject(true, "craftingstation", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+        ESODB.Debug("craftingstation..")
+        ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
+        ESODB.GatherObject(true, "craftingstation", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
 
     -- Wayshrine
     elseif interactionType == INTERACTION_FAST_TRAVEL and playerInteracting then
-      ESODB.Debug("wayshrine..")
-      ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
-      ESODB.GatherObject(true, "wayshrine", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+        ESODB.Debug("wayshrine..")
+        ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
+        ESODB.GatherObject(true, "wayshrine", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
 
     elseif interactionType == nil then
-      ESODB.Debug("Nil!..")
+        ESODB.Debug("Nil!..")
     else
-      ESODB.Debug("Uknown Update: " .. objectName .. " " .. interactionType )
+        ESODB.Debug("Uknown Update: " .. objectName .. " " .. interactionType )
     end
-  -- Search
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE1) then
-    ESODB.Debug("Search..")
-    ESODB.processingNode = "loot"
-  -- Talk
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE2) then
-    -- Not in use
-  -- Read
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE6) then
-    -- Not in use
-  -- Disarm
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE4) then
-    -- Not in use
-  -- Take
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE7) then
-      -- harvest / provisioning / misc
-      ESODB.processingNode = "take"
-      ESODB.Debug("Take..")
-  -- Destroy
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE8) then
+    -- Search
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE1) then
+        ESODB.Debug("Search..")
+        ESODB.processingNode = "loot"
+    -- Talk
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE2) then
+        -- Not in use
+    -- Read
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE6) then
+        -- Not in use
+    -- Disarm
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE4) then
+        -- Not in use
+    -- Take
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE7) then
+        -- harvest / provisioning / misc
+        ESODB.processingNode = "take"
+        ESODB.Debug("Take..")
+    -- Destroy
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE8) then
     ESODB.Debug("Destroy..")
 
-  -- Repair
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE9) then
-    -- Not in use
+    -- Repair
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE9) then
+        -- Not in use
 
-  -- Inspect
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE10) then
-    ESODB.Debug("Inspect..")
+    -- Inspect
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE10) then
+        ESODB.Debug("Inspect..")
 
-  -- Repair
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE11) then
-    -- Not in use
+    -- Repair
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE11) then
+        -- Not in use
 
-  -- Unlock
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE12) then
+    -- Unlock
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE12) then
     -- Chests
-    ESODB.Debug("Chests..")
-    ESODB.GatherObject(true, "chest", {subzone}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+        ESODB.Debug("Chests..")
+        ESODB.GatherObject(true, "chest", {subzone}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
 
-  -- Open
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE13) then
-    -- Not in use
+    -- Open
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE13) then
+        -- Not in use
 
-  -- Examine
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE15) then
-    ESODB.Debug("Examine..")
+    -- Examine
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE15) then
+        ESODB.Debug("Examine..")
 
-  -- Fish
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE16) then
-    ESODB.Debug("Fish..")
-    ESODB.GatherObject(true, "fish", {subzone}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+    -- Fish
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE16) then
+        ESODB.Debug("Fish..")
+        ESODB.GatherObject(true, "fish", {subzone}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
 
-  -- Reel in
-  elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE17) then
-    ESODB.Debug("Reel in..")
+    -- Reel in
+    elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE17) then
+        ESODB.Debug("Reel in..")
 
-  else
-    ESODB.Debug("Everything else...should be harvest, if it has loot")
-    ESODB.processingNode = "harvest"
-  end
+    else
+        ESODB.Debug("Everything else...should be harvest, if it has loot")
+        ESODB.processingNode = "harvest"
+    end
 end
 
 -- Log ALL NPC's \0/ (And thats also an issue.. so we need to filter this somehow)
@@ -377,12 +380,8 @@ function ESODB.UpdateMoney(_, money)
     player.money = {}
   end
 
-  local dateValue = GetDate()
-  local timeValue = GetTimeString()
+  player.money = money
 
-  local timeStamp = dateValue .. "T" .. timeValue
-
-  ESODB.GatherObject(false, "character", { ESODB.currentPlayerName, "money", timeStamp }, { amount = money } )
   ESODB.Debug( "Debug: [UpdateMoney] data: " .. money )
 end
 
@@ -717,6 +716,8 @@ function ESODB.ProcessSlashCommands(cmd)
         end
       end
     end
+  elseif command[1] == "test" then
+    ESODB.testingFunction()
   elseif command[1] == "clear" then
     for type,sv in pairs(ESODB.savedVars) do
       if type ~= "settings" then
@@ -814,7 +815,84 @@ end
 
 -- Gather all info about a player here
 function ESODB.OnPlayerActivated(eventCode)
+    local currentPlayerName = ESODB.currentPlayerName
+    local health, maxHealth = GetUnitPower("player", POWERTYPE_HEALTH)
+    local current = GetUnitPower("player", POWERTYPE_ULTIMATE)
 
+    ESODB.Debug( GetUnitPower("player", POWERTYPE_HEALTH) ) --367, 367, 367 ?
+    ESODB.Debug( "Ultimate: " .. GetUnitPower("player", POWERTYPE_ULTIMATE) ) --151 ?
+    ESODB.Debug( GetUnitXP("player") ) -- 9304
+    ESODB.Debug( GetUnitLevel("player") ) -- 8
+    ESODB.Debug( GetUnitXPMax("player") ) -- 10100
+    ESODB.Debug( GetUnitRace("player") ) -- Argonian
+    ESODB.Debug( GetUnitClass("player") ) -- Templar
+    ESODB.Debug( GetUnitAlliance("player") ) -- 1
+    ESODB.Debug( GetUnitAvARankPoints("player") ) -- 0
+
+    local stats = {
+        hp = maxHealth,
+        xp = GetUnitXP("player"),
+        maxxp = GetUnitXPMax("player"),
+        lvl = GetUnitLevel("player"),
+        race = GetUnitRace("player"),
+        class = GetUnitClass("player"),
+        alliance = GetUnitAlliance("player"),
+        avapoints = GetUnitAvARankPoints("player"),
+        avarank  = GetUnitAvARank("player")
+    }
+
+    sv = ESODB.savedVars["character"].data
+    local player = sv[ ESODB.currentPlayerName ]
+    if player.stats == nil then
+        player.stats = {}
+    end
+    player.stats = stats
+    ESODB.Debug( "Debug: [OnPlayerActivated] data: " )
+    ESODB.Debug(stats)
+
+
+    -- GetUnitStealthState("player")
+    -- 
+    -- GetUnitXP("player"), GetUnitXPMax("player"), GetUnitLevel("player")
+    -- rankpoints: GetUnitAvARankPoints("player")
+    -- rank: GetUnitAvARank("player")
+    -- attributeRow:RegisterForEvent(EVENT_POWER_UPDATE, OnPowerUpdate) --
+    --    local unitTag = self.groupTags[i]
+    --    local characterName = GetUnitName(unitTag)
+    --    local zone = GetUnitZone(unitTag)
+    --    local class = GetUnitClassType(unitTag)
+    --    local level = GetUnitLevel(unitTag)
+    --    local leader = IsUnitGroupLeader(unitTag)
+    --    local online = IsUnitOnline(unitTag)
+    --    local isPlayer = AreUnitsEqual(unitTag, "player")
+    --    local isDps, isHeal, isTank = GetGroupMemberRoles(unitTag)
+
+end
+ -- EVENT_INVENTORY_HELD_ITEMS_CHANGED, OnHeldItemsChanged)
+-- function OnHeldItemsChanged(event, heldMain)
+
+function ESODB.testingFunction()
+    local slots = {}
+    slots =
+    {
+        [EQUIP_SLOT_HEAD]       = ZO_CharacterEquipmentSlotsHead,
+        [EQUIP_SLOT_NECK]       = ZO_CharacterEquipmentSlotsNeck,
+        [EQUIP_SLOT_CHEST]      = ZO_CharacterEquipmentSlotsChest,
+        [EQUIP_SLOT_SHOULDERS]  = ZO_CharacterEquipmentSlotsShoulder,
+        [EQUIP_SLOT_MAIN_HAND]  = ZO_CharacterEquipmentSlotsMainHand,
+        [EQUIP_SLOT_OFF_HAND]   = ZO_CharacterEquipmentSlotsOffHand,
+        [EQUIP_SLOT_WAIST]      = ZO_CharacterEquipmentSlotsBelt,
+        [EQUIP_SLOT_LEGS]       = ZO_CharacterEquipmentSlotsLeg,
+        [EQUIP_SLOT_FEET]       = ZO_CharacterEquipmentSlotsFoot,
+        [EQUIP_SLOT_COSTUME]    = ZO_CharacterEquipmentSlotsCostume,
+        [EQUIP_SLOT_RING1]      = ZO_CharacterEquipmentSlotsRing1,
+        [EQUIP_SLOT_RING2]      = ZO_CharacterEquipmentSlotsRing2,
+        [EQUIP_SLOT_HAND]       = ZO_CharacterEquipmentSlotsGlove,
+        [EQUIP_SLOT_BACKUP_MAIN]= ZO_CharacterEquipmentSlotsBackupMain,
+        [EQUIP_SLOT_BACKUP_OFF] = ZO_CharacterEquipmentSlotsBackupOff,
+    }
+
+    ESODB.Debug(slots)
 end
 
 function ESODB.OnLoad(eventCode, addOnName)
