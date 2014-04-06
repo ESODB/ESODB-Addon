@@ -185,7 +185,7 @@ function ESODB.OnUpdate()
         -- No special Interaction
         if interactionType == INTERACTION_NONE then
             --Skyshard
-            if objectName == "skyshard" then -- Does this work in German/Russian/etc?
+            if objectName == "Skyshard" then -- Does this work in German/Russian/etc?
                 ESODB.Debug("Skyshard..")
                 ESODB.GatherObject(true, "skyshard", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
             else
