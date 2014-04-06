@@ -1,0 +1,19 @@
+<GuiXml>
+    <Controls>
+        <TopLevelControl name="ESODBUi">
+            <OnUpdate>
+                ESODB.OnUpdate()
+            </OnUpdate>
+        </TopLevelControl>
+        <TopLevelControl name="ESODBCords">
+            <OnUpdate>
+                ESODB.GetCoordinates()
+            </OnUpdate>
+            <Controls>
+                <Label name="ESODBCordsValue" font="ZoFontGameLargeBold" wrapMode="ELLIPSIS" color="CFDCBD" text="">
+                    <AnchorFill />
+                </Label>
+            </Controls>
+        </TopLevelControl>
+    </Controls>
+</GuiXml>

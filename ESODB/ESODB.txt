@@ -1,0 +1,8 @@
+## Title: ESODB
+## Author: ESODB
+## Version: 1.0
+## APIVersion: 100003
+## SavedVariables: ESODB_SavedVariables
+
+lib/CoreGatherer.lua
+xml/ESODB.xml
