@@ -1,4 +1,3 @@
-
 ESODB = {}
 ESODB.name = "ESODB"
 ESODB.version = "0.0.8"
@@ -716,8 +715,6 @@ function ESODB.ProcessSlashCommands(cmd)
         end
       end
     end
-  elseif command[1] == "test" then
-    ESODB.testingFunction()
   elseif command[1] == "clear" then
     for type,sv in pairs(ESODB.savedVars) do
       if type ~= "settings" then
@@ -819,16 +816,6 @@ function ESODB.OnPlayerActivated(eventCode)
     local health, maxHealth = GetUnitPower("player", POWERTYPE_HEALTH)
     local current = GetUnitPower("player", POWERTYPE_ULTIMATE)
 
-    ESODB.Debug( GetUnitPower("player", POWERTYPE_HEALTH) ) --367, 367, 367 ?
-    ESODB.Debug( "Ultimate: " .. GetUnitPower("player", POWERTYPE_ULTIMATE) ) --151 ?
-    ESODB.Debug( GetUnitXP("player") ) -- 9304
-    ESODB.Debug( GetUnitLevel("player") ) -- 8
-    ESODB.Debug( GetUnitXPMax("player") ) -- 10100
-    ESODB.Debug( GetUnitRace("player") ) -- Argonian
-    ESODB.Debug( GetUnitClass("player") ) -- Templar
-    ESODB.Debug( GetUnitAlliance("player") ) -- 1
-    ESODB.Debug( GetUnitAvARankPoints("player") ) -- 0
-
     local stats = {
         hp = maxHealth,
         xp = GetUnitXP("player"),
@@ -849,50 +836,6 @@ function ESODB.OnPlayerActivated(eventCode)
     player.stats = stats
     ESODB.Debug( "Debug: [OnPlayerActivated] data: " )
     ESODB.Debug(stats)
-
-
-    -- GetUnitStealthState("player")
-    -- 
-    -- GetUnitXP("player"), GetUnitXPMax("player"), GetUnitLevel("player")
-    -- rankpoints: GetUnitAvARankPoints("player")
-    -- rank: GetUnitAvARank("player")
-    -- attributeRow:RegisterForEvent(EVENT_POWER_UPDATE, OnPowerUpdate) --
-    --    local unitTag = self.groupTags[i]
-    --    local characterName = GetUnitName(unitTag)
-    --    local zone = GetUnitZone(unitTag)
-    --    local class = GetUnitClassType(unitTag)
-    --    local level = GetUnitLevel(unitTag)
-    --    local leader = IsUnitGroupLeader(unitTag)
-    --    local online = IsUnitOnline(unitTag)
-    --    local isPlayer = AreUnitsEqual(unitTag, "player")
-    --    local isDps, isHeal, isTank = GetGroupMemberRoles(unitTag)
-
-end
- -- EVENT_INVENTORY_HELD_ITEMS_CHANGED, OnHeldItemsChanged)
--- function OnHeldItemsChanged(event, heldMain)
-
-function ESODB.testingFunction()
-    local slots = {}
-    slots =
-    {
-        [EQUIP_SLOT_HEAD]       = ZO_CharacterEquipmentSlotsHead,
-        [EQUIP_SLOT_NECK]       = ZO_CharacterEquipmentSlotsNeck,
-        [EQUIP_SLOT_CHEST]      = ZO_CharacterEquipmentSlotsChest,
-        [EQUIP_SLOT_SHOULDERS]  = ZO_CharacterEquipmentSlotsShoulder,
-        [EQUIP_SLOT_MAIN_HAND]  = ZO_CharacterEquipmentSlotsMainHand,
-        [EQUIP_SLOT_OFF_HAND]   = ZO_CharacterEquipmentSlotsOffHand,
-        [EQUIP_SLOT_WAIST]      = ZO_CharacterEquipmentSlotsBelt,
-        [EQUIP_SLOT_LEGS]       = ZO_CharacterEquipmentSlotsLeg,
-        [EQUIP_SLOT_FEET]       = ZO_CharacterEquipmentSlotsFoot,
-        [EQUIP_SLOT_COSTUME]    = ZO_CharacterEquipmentSlotsCostume,
-        [EQUIP_SLOT_RING1]      = ZO_CharacterEquipmentSlotsRing1,
-        [EQUIP_SLOT_RING2]      = ZO_CharacterEquipmentSlotsRing2,
-        [EQUIP_SLOT_HAND]       = ZO_CharacterEquipmentSlotsGlove,
-        [EQUIP_SLOT_BACKUP_MAIN]= ZO_CharacterEquipmentSlotsBackupMain,
-        [EQUIP_SLOT_BACKUP_OFF] = ZO_CharacterEquipmentSlotsBackupOff,
-    }
-
-    ESODB.Debug(slots)
 end
 
 function ESODB.OnLoad(eventCode, addOnName)
