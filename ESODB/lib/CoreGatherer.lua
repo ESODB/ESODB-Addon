@@ -690,30 +690,30 @@ function ESODB.ProcessSlashCommands(cmd)
     if command[1] == "debug" then
       if command[2] == "on" then
           ESODB.savedVars["settings"].debug = 1
-          ESODB.Debug("ESODB debugger is now on")
+          ESODB.SendMessage("ESODB debugger is now on")
       elseif command[2] == "off" then
           ESODB.savedVars["settings"].debug = 0
-          ESODB.Debug("ESODB debugger is now off")
+          ESODB.SendMessage("ESODB debugger is now off")
       else
-          ESODB.Debug("Use '/esodb debug on' or '/esodb debug off'")
+          ESODB.SendMessage("Use '/esodb debug on' or '/esodb debug off'")
       end
     end
     if command[1] == "info" then
       if command[2] == "on" then
         ESODB.savedVars["settings"].info = 1
-        ESODB.Debug("ESODB info is now on")
+        ESODB.SendMessage("ESODB info is now on")
       elseif command[2] == "off" then
         ESODB.savedVars["settings"].info = 0
-        ESODB.Debug("ESODB info is now off")
+        ESODB.SendMessage("ESODB info is now off")
       else
-        ESODB.Debug("Use '/esodb info on' or '/esodb info off'")
+        ESODB.SendMessage("Use '/esodb info on' or '/esodb info off'")
       end
     end
     if command[1] == "clear" then
       for type,sv in pairs(ESODB.savedVars) do
         if type == command[2] and type ~= "settings" and ESODB.savedVars[type] ~= nil then
           ESODB.savedVars[type].data = {}
-          ESODB.Debug("The data " .. command[2] ..  " has been cleared")
+          ESODB.SendMessage("The data " .. command[2] ..  " has been cleared")
         end
       end
     end
@@ -723,12 +723,12 @@ function ESODB.ProcessSlashCommands(cmd)
         ESODB.savedVars[type].data = {}
       end
     end
-      ESODB.Debug("The data has been cleared")
+      ESODB.SendMessage("The data has been cleared")
     elseif command[1] == "size" then
       -- Create a loop that counts all data.
       -- Too high = give warning, upload data and /esodb clear or /esodb clear npc
   else
-    ESODB.Debug("Not a valid command")
+    ESODB.SendMessage("Not a valid command")
   end
 end
 
