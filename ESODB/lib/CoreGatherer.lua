@@ -191,25 +191,24 @@ function ESODB.OnUpdate()
             else
                 ESODB.Debug("Debugging INTERACTION_NONE")
             end
+        -- Crafting station
+        elseif interactionType == 23 and playerInteracting then
+            ESODB.Debug("craftingstation..")
+            ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
+            ESODB.GatherObject(true, "craftingstation", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+
+        -- Wayshrine
+        elseif interactionType == INTERACTION_FAST_TRAVEL and playerInteracting then
+            ESODB.Debug("wayshrine..")
+            ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
+            ESODB.GatherObject(true, "wayshrine", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
+
+        elseif interactionType == nil then
+            ESODB.Debug("Nil!..")
+        else
+            ESODB.Debug("Uknown Update: " .. objectName .. " " .. interactionType )
         end
 
-    -- Crafting station
-    elseif interactionType == 23 and playerInteracting then
-        ESODB.Debug("craftingstation..")
-        ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
-        ESODB.GatherObject(true, "craftingstation", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
-
-    -- Wayshrine
-    elseif interactionType == INTERACTION_FAST_TRAVEL and playerInteracting then
-        ESODB.Debug("wayshrine..")
-        ESODB.activeTarget = { interaction = interactionType, action = objectAction, name = objectName, x = xPos, y = yPos }
-        ESODB.GatherObject(true, "wayshrine", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
-
-    elseif interactionType == nil then
-        ESODB.Debug("Nil!..")
-    else
-        ESODB.Debug("Uknown Update: " .. objectName .. " " .. interactionType )
-    end
     -- Search
     elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE1) then
         ESODB.Debug("Search..")
