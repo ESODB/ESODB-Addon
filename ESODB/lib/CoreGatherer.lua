@@ -126,11 +126,10 @@ function ESODB.OnUpdate()
     local playerInteracting = IsPlayerInteractingWithObject()
     local interactionType = GetInteractionType()
 
-    -- Action or the object name is empty
+    -- Action is empty
     if objectAction == nil then
         -- Clearing targets
         ESODB.activeTarget = {}
-        ESODB.lastTarget = {}
         return
     end
 
@@ -138,7 +137,6 @@ function ESODB.OnUpdate()
     if objectName == nil then
         -- Clearing targets
         ESODB.activeTarget = {}
-        ESODB.lastTarget = {}
         return
     end
 
@@ -463,7 +461,7 @@ function ESODB.OnStablesInteractStart()
   end
 end
 
-function ESODB.OnQuestRemoved()
+function ESODB.function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, zoneIndex, poiIndex)
 
 end
 
@@ -835,6 +833,7 @@ function ESODB.OnPlayerActivated(eventCode)
     player.stats = stats
     ESODB.Debug( "Debug: [OnPlayerActivated] data: " )
     ESODB.Debug(stats)
+    ESODB.SendMessage("ESODB initialized. Have fun gathering!")
 end
 
 function ESODB.OnLoad(eventCode, addOnName)
@@ -846,7 +845,6 @@ function ESODB.OnLoad(eventCode, addOnName)
     ESODB.InitSavedVariables()
     ESODB.InitCharacter()
     ESODB.InitSlashCommands()
-    ESODB.SendMessage(addOnName .. " initialized. Have fun gathering!")
     EVENT_MANAGER:RegisterForEvent(addOnName, EVENT_LOOT_RECEIVED, ESODB.OnLootReceived)
     EVENT_MANAGER:RegisterForEvent(addOnName, EVENT_RETICLE_TARGET_CHANGED, ESODB.OnTargetChange)
     EVENT_MANAGER:RegisterForEvent(addOnName, EVENT_CHATTER_BEGIN, ESODB.OnChatterBegin)
@@ -859,7 +857,7 @@ function ESODB.OnLoad(eventCode, addOnName)
     EVENT_MANAGER:RegisterForEvent(addOnName, EVENT_PLAYER_ACTIVATED, ESODB.OnPlayerActivated )
 
     -- Debug only so far:
-    --EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_QUEST_REMOVED, ESODB.OnQuestRemoved) --completed quest?
+    EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_QUEST_REMOVED, ESODB.OnQuestRemoved) --completed quest?
     --EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_ABILITY_PROGRESSION_XP_UPDATE, ESODB.OnAbilityProgressionUpdate)
     --EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_CONVERSATION_UPDATED, ESODB.OnConversationUpdated) -- No use tracking yet, conversations are not in the right order
 
