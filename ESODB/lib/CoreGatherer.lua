@@ -461,7 +461,7 @@ function ESODB.OnStablesInteractStart()
   end
 end
 
-function ESODB.function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, zoneIndex, poiIndex)
+function ESODB.OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, zoneIndex, poiIndex)
 
 end
 
@@ -857,7 +857,7 @@ function ESODB.OnLoad(eventCode, addOnName)
     EVENT_MANAGER:RegisterForEvent(addOnName, EVENT_PLAYER_ACTIVATED, ESODB.OnPlayerActivated )
 
     -- Debug only so far:
-    EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_QUEST_REMOVED, ESODB.OnQuestRemoved) --completed quest?
+    -- EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_QUEST_REMOVED, ESODB.OnQuestRemoved) --completed quest?
     --EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_ABILITY_PROGRESSION_XP_UPDATE, ESODB.OnAbilityProgressionUpdate)
     --EVENT_MANAGER:RegisterForEvent("ESODB", EVENT_CONVERSATION_UPDATED, ESODB.OnConversationUpdated) -- No use tracking yet, conversations are not in the right order
 
