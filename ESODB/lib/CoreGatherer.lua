@@ -822,7 +822,8 @@ function ESODB.OnPlayerActivated(eventCode)
         class = GetUnitClass("player"),
         alliance = GetUnitAlliance("player"),
         avapoints = GetUnitAvARankPoints("player"),
-        avarank  = GetUnitAvARank("player")
+        avarank  = GetUnitAvARank("player"),
+        gender = GetUnitGender("player")
     }
 
     sv = ESODB.savedVars["character"].data
