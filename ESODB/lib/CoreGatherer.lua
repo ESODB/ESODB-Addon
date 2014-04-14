@@ -1,6 +1,6 @@
 ESODB = {}
 ESODB.name = "ESODB"
-ESODB.version = "0.0.8"
+ESODB.version = "0.0.9"
 ESODB.savedVars = {}
 
 -- Saved Variables:
