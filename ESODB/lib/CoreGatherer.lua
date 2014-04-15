@@ -773,7 +773,7 @@ function ESODB.OnLootReceived(eventCode, receivedBy, objectName, stackCount, sou
     ESODB.Debug(ESODB.processingNode)
 
     if isQuestItem then
-      ESODB.GatherObject(false, "questitem", {subzone}, { x = xPos, y = yPos, stackcount = stackCount, target = lastTarget.name, date = dateValue, time = timeValue } )
+      ESODB.GatherObject(false, "questitem", {subzone}, { x = xPos, y = yPos, stackcount = stackCount, target = lastTarget.name, object = objectName, date = dateValue, time = timeValue } )
     elseif ESODB.processingNode == "take" then
       -- Deer / Mug / Butterfly
       ESODB.GatherObject(false, "take", {subzone, lastTarget.name}, { x = xPos, y = yPos, object = objectName, stackcount = stackCount, id = loot.id, quality = loot.quality, date = dateValue, time = timeValue } )
