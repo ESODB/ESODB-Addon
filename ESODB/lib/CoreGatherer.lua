@@ -1,6 +1,6 @@
 ESODB = {}
 ESODB.name = "ESODB"
-ESODB.version = "0.0.9"
+ESODB.version = "0.0.10"
 ESODB.savedVars = {}
 
 -- Saved Variables:
@@ -36,13 +36,14 @@ function ESODB.InitSavedVariables(...)
     ["questitem"]       = ESODB.savedVar(2, "questitem", nil), -- Quest item loot, not linkable
     ["take"]            = ESODB.savedVar(2, "take", nil), -- Butterfly's / Mugs
     ["harvest"]         = ESODB.savedVar(2, "harvest", nil), -- Mine nodes, Runes, Plants, Logs
-    -- Location of Nodes (Mines/Fish/Books/)
+    -- Location of Nodes (Mines/Fish/Books/Doors)
     ["book"]            = ESODB.savedVar(2, "book", nil),
     ["craftingstation"] = ESODB.savedVar(2, "craftingstation", nil),
     ["wayshrine"]       = ESODB.savedVar(2, "wayshrine", nil),
     ["skyshard"]        = ESODB.savedVar(2, "skyshard", nil),
     ["fish"]            = ESODB.savedVar(2, "fish", nil),
     ["chest"]           = ESODB.savedVar(2, "chest", nil),
+    ["door"]            = ESODB.savedVar(1, "door", nil),
 
     -- For debugging and unknown stuff
     ["unknown"]         = ESODB.savedVar(1, "unknown", nil),
@@ -249,7 +250,7 @@ function ESODB.OnUpdate()
 
     -- Open
     elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE13) then
-        -- Not in use
+        ESODB.GatherObject(true, "door", {subzone, objectName}, { x = xPos, y = yPos, date = dateValue, time = timeValue } )
 
     -- Examine
     elseif objectAction == GetString(SI_GAMECAMERAACTIONTYPE15) then
