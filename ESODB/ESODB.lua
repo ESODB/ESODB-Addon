@@ -1,6 +1,6 @@
 ESODB = {}
 ESODB.name = "ESODB"
-ESODB.version = "0.0.10"
+ESODB.version = "0.0.11"
 ESODB.savedVars = {}
 
 -- Saved Variables:
@@ -22,7 +22,7 @@ end
 function ESODB.InitSavedVariables(...)
   ESODB.savedVars = {
     -- Addon settings
-    ["settings"]        = ESODB.savedVar(1, "settings", { debug = 0, info = 0, addonVersion = ESODB.Version }),
+    ["settings"]        = ESODB.savedVar(2, "settings", { debug = 0, info = 0, addonVersion = ESODB.Version, gathertype = "light" }),
     -- Character info
     ["character"]       = ESODB.savedVar(3, "character", nil),
     -- NPC related
@@ -271,7 +271,7 @@ function ESODB.OnUpdate()
     end
 end
 
--- Log ALL NPC's \0/ (And thats also an issue.. so we need to filter this somehow)
+-- Log ALL NPC's \0/ (And thats also an issue.. so we need to filter this somehow --> BROKEN SINCE LATEST ESO UPDATE!)
 function ESODB.OnTargetChange(eventCode)
   local unitType = ESODB.GetUnitType("reticleover")
 
@@ -290,6 +290,24 @@ function ESODB.OnTargetChange(eventCode)
       -- Didn't get a valid location. Ignore
       if xPos <= 0 or yPos <= 0 then
         return
+      end
+
+      if ESODB.savedVars["settings"].gathertype == "light" then  
+        local npcs = ESODB.savedVars["npc"].data
+        if npcs[subzone] ~= nil then 
+          local npcSubzone = npcs[subzone]
+          if npcSubzone[unitName] ~= nil then
+            local unitNames = npcSubzone[unitName]
+            if #unitNames >= 5 then
+                ESODB.Debug("Npc name has been counted 5 time already, stopping....")
+                return
+            end
+          end
+          if #npcSubzone >= 300 then
+            ESODB.Debug("Npc count for zone reached 300, stopping....")
+            return
+          end
+        end
       end
 
       local dateValue = GetDate()
@@ -703,6 +721,17 @@ function ESODB.ProcessSlashCommands(cmd)
         ESODB.SendMessage("ESODB info is now off")
       else
         ESODB.SendMessage("Use '/esodb info on' or '/esodb info off'")
+      end
+    end
+    if command[1] == "set" then
+      if command[2] == "heavy" then
+        ESODB.savedVars["settings"].gathertype = "heavy"
+        ESODB.SendMessage("ESODB now gathers heavy (NPC's, book info..etc)")
+      elseif command[2] == "light" then
+        ESODB.savedVars["settings"].gathertype = "light"
+        ESODB.SendMessage("ESODB now gathers lightly (bare info, not so heavy)")
+      else
+        ESODB.SendMessage("Use '/esodb set heavy' or '/esodb set light'")
       end
     end
     if command[1] == "clear" then
