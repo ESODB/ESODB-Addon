@@ -1,6 +1,6 @@
 ESODB = {}
 ESODB.name = "ESODB"
-ESODB.version = "0.0.11"
+ESODB.version = "0.0.12"
 ESODB.savedVars = {}
 
 -- Saved Variables:
@@ -357,13 +357,23 @@ function ESODB.OnShowBook(eventCode, title, body, medium, showTitle)
   local timeValue = GetTimeString()
 
   if xPos <= 0 or yPos <= 0 then return false end
+  if body == nil then return false end
+  if type( body ) ~= "string" then return false end
 
   ESODB.Debug( "Book read. Medium: " .. medium )
 
   setBody = string.gsub(body, "\n", "|") -- remove line breaks
   setBody = string.gsub(setBody, "\"","''") -- replace " to '
 
-  ESODB.GatherObject(true, "book", {subzone, title}, { x = xPos, y = yPos, text = setBody, medium = medium, date = dateValue, time = timeValue } )
+  local newBody = {}
+
+  while string.len(setBody) > 1024 do
+    table.insert(newBody, string.sub(setBody, 0, 1024))
+    setBody = string.sub(setBody, 1025)
+  end
+  table.insert(newBody, setBody)
+
+  ESODB.GatherObject(true, "book", {subzone, title}, { x = xPos, y = yPos, text = newBody, medium = medium, date = dateValue, time = timeValue } )
 end
 
 function ESODB.OnQuestAdded(_, questIndex)
